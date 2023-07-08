@@ -19,7 +19,6 @@ if not os.path.exists("tmp"):
     os.makedirs("tmp")
 
 # get all svg files from input
-# for file in glob.glob("input/*.svg"):
 items = glob.glob("input/*.svg")
 
 def createIcon(icon, color):
