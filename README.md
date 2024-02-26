@@ -11,5 +11,5 @@ Python 3.10 or newer
 5. Run the script with "python convert.py"
 
 ## Sources for compatible icons
-MaterialDesign Icons: https://github.com/Templarian/MaterialDesign
-Simple Icons: https://github.com/simple-icons/simple-icons
+[MaterialDesign Icons](https://github.com/Templarian/MaterialDesign)  
+[Simple Icons](https://github.com/simple-icons/simple-icons)
