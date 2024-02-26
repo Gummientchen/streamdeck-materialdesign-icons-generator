@@ -21,13 +21,13 @@ if not os.path.exists("tmp"):
 # get all svg files from input
 items = glob.glob("input/*.svg")
 
-def createIcon(icon, color):
+def createIcon(icon, color, backgroundColor = (11, 27, 56)):
     # Foreground
     foreground  = Image.new( mode = "RGB", size = (96, 96), color = color )
     foreground.putalpha(icon)
 
     # Background
-    background  = Image.new( mode = "RGBA", size = (width, height), color = (11, 27, 56) )
+    background  = Image.new( mode = "RGBA", size = (width, height), color = backgroundColor )
     background.paste(foreground, (24, 8), foreground)
 
     background = background.convert("P", palette=Image.ADAPTIVE, colors=64)
