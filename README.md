@@ -1,9 +1,12 @@
 # Streamdeck Materialdesign Icons Generator
 
 ## Requirements
+
 Python 3.10 or newer
+Inkscape (you may have to adjust the path to the inkscape.exe in the convert.py file)
 
 ## How to use
+
 1. Get the desired Materialdesign icons from https://github.com/Templarian/MaterialDesign (download repository as .zip)
 2. Extract the downloaded .zip file
 3. Put the files from the subfolder "svg" into the "input" folder
@@ -11,5 +14,6 @@ Python 3.10 or newer
 5. Run the script with "python convert.py"
 
 ## Sources for compatible icons
+
 [MaterialDesign Icons](https://github.com/Templarian/MaterialDesign)  
 [Simple Icons](https://github.com/simple-icons/simple-icons)
