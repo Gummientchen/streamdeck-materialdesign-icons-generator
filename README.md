@@ -2,8 +2,8 @@
 
 ## Requirements
 
-Python 3.10 or newer
-Inkscape (you may have to adjust the path to the inkscape.exe in the convert.py file)
+- Python 3.10 or newer
+- Inkscape (you may have to adjust the path to the inkscape.exe in the convert.py file)
 
 ## How to use
 
