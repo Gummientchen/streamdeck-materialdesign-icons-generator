@@ -9,19 +9,16 @@ from PIL import Image, ImageOps, ImageDraw
 
 ## define your wanted color variations here
 variants = [
-    ["aqua", (0, 200, 253), (11, 27, 56)],
-    ["blue", (59, 123, 255), (11, 27, 56)],
-    ["green", (47, 199, 134), (11, 27, 56)],
-    ["orange", (255, 109, 76), (11, 27, 56)],
-    ["pink", (194, 89, 240), (11, 27, 56)],
-    ["pink2", (235, 82, 148), (11, 27, 56)],
-    ["yellow", (247, 206, 0), (11, 27, 56)],
-    ["red", (247, 0, 0), (11, 27, 56)],
-    ["white", (252, 252, 252), (11, 27, 56)],
-    ["nvidia", (255,255,255), [
-        (123,185,7),
-        (55,141,52)
-    ]]
+    {"name": "aqua", "color": (0, 200, 253), "background": (11, 27, 56)},
+    {"name": "blue", "color": (59, 123, 255), "background": (11, 27, 56)},
+    {"name": "green", "color": (47, 199, 134), "background": (11, 27, 56)},
+    {"name": "orange", "color": (255, 109, 76), "background": (11, 27, 56)},
+    {"name": "pink", "color": (194, 89, 240), "background": (11, 27, 56)},
+    {"name": "pink2", "color": (235, 82, 148), "background": (11, 27, 56)},
+    {"name": "yellow", "color": (247, 206, 0), "background": (11, 27, 56)},
+    {"name": "red", "color": (247, 0, 0), "background": (11, 27, 56)},
+    {"name": "white", "color": (252, 252, 252), "background": (11, 27, 56)},
+    {"name": "nvidia", "color": (255,255,255), "background": [(123,185,7),(55,141,52)]},
 ]
 
 ## settings
@@ -59,11 +56,49 @@ def createIcon(icon, color, backgroundColor = (11, 27, 56)):
             draw.line([(0, i), (background.width, i)], tuple(color), width=1)
     else:
         background  = Image.new( mode = "RGBA", size = (width, height), color = backgroundColor )
+    
+    # Background animated
+    animatedRed = Image.new( mode = "RGBA", size = (width, height), color = (200,0,0) )
+    animatedGreen = Image.new( mode = "RGBA", size = (width, height), color = (0,220,0) )
 
+    # composite icon
     background.paste(foreground, (24, 8), foreground)
-    background = background.convert("P", palette=Image.ADAPTIVE, colors=64)
+    animatedRed.paste(foreground, (24, 8), foreground)
+    animatedRed1 = Image.blend(background, animatedRed, 0.25)
+    animatedRed2 = Image.blend(background, animatedRed, 0.5)
+    animatedRed3 = Image.blend(background, animatedRed, 0.75)
+    animatedGreen.paste(foreground, (24, 8), foreground)
+    animatedGreen1 = Image.blend(background, animatedGreen, 0.25)
+    animatedGreen2 = Image.blend(background, animatedGreen, 0.5)
+    animatedGreen3 = Image.blend(background, animatedGreen, 0.75)
+    
 
-    return background
+    # reduce colors
+    background = background.convert("P", palette=Image.ADAPTIVE, colors=64)
+    animatedRed = animatedRed.convert("P", palette=Image.ADAPTIVE, colors=64)
+    animatedRed1 = animatedRed1.convert("P", palette=Image.ADAPTIVE, colors=64)
+    animatedRed2 = animatedRed2.convert("P", palette=Image.ADAPTIVE, colors=64)
+    animatedRed3 = animatedRed3.convert("P", palette=Image.ADAPTIVE, colors=64)
+    animatedGreen = animatedGreen.convert("P", palette=Image.ADAPTIVE, colors=64)
+    animatedGreen1 = animatedGreen1.convert("P", palette=Image.ADAPTIVE, colors=64)
+    animatedGreen2 = animatedGreen2.convert("P", palette=Image.ADAPTIVE, colors=64)
+    animatedGreen3 = animatedGreen3.convert("P", palette=Image.ADAPTIVE, colors=64)
+
+    animatedRedIcon = [
+        animatedRed,
+        animatedRed1,
+        animatedRed2,
+        animatedRed3
+    ]
+
+    animatedGreenIcon = [
+        animatedGreen,
+        animatedGreen1,
+        animatedGreen2,
+        animatedGreen3
+    ]
+
+    return background, animatedRedIcon, animatedGreenIcon
 
 # prepares the icon vor generation
 def createPNGfromSVG(svgFilename):
@@ -71,10 +106,16 @@ def createPNGfromSVG(svgFilename):
     filename = os.path.splitext(filename)[0]
     tmpFilename = "".join(["tmp/", filename, ".png"])
     outputFolder = "".join(["output/", filename])
+    outputFolderAnimatedRed = "".join(["output/", filename, "/animated-red"])
+    outputFolderAnimatedGreen = "".join(["output/", filename, "/animated-green"])
 
     # create output folder
     if not os.path.exists(outputFolder):
         os.makedirs(outputFolder)
+    if not os.path.exists(outputFolderAnimatedRed):
+        os.makedirs(outputFolderAnimatedRed)
+    if not os.path.exists(outputFolderAnimatedGreen):
+        os.makedirs(outputFolderAnimatedGreen)
 
     # convert SVG to PNG if neccessary
     if not os.path.isfile(tmpFilename):
@@ -90,9 +131,43 @@ def createPNGfromSVG(svgFilename):
 
     # Color variants
     for variant in variants:
-        iconVariant = createIcon(iconInverted, variant[1], variant[2])
-        outputFilename = "".join([outputFolder, "/", filename, "-",variant[0],".png"])
+        iconVariant, iconVariantAnimatedRed, iconVariantAnimatedGreen = createIcon(iconInverted, variant["color"], variant["background"])
+
+        outputFilename = "".join([outputFolder, "/", filename, "-",variant["name"],".png"])
+        outputFilenameAnimatedRed = "".join([outputFolderAnimatedRed, "/", filename, "-",variant["name"],"-animated-red.gif"])
+        outputFilenameAnimatedGreen = "".join([outputFolderAnimatedGreen, "/", filename, "-",variant["name"],"-animated-green.gif"])
+
         iconVariant.save(outputFilename, optimize = True)
+        iconVariant.save(
+            outputFilenameAnimatedRed,
+            optimize = False,
+            save_all=True,
+            append_images=[
+                iconVariant,
+                iconVariant,
+                iconVariant,
+                iconVariantAnimatedRed[1],
+                iconVariantAnimatedRed[2],
+                iconVariantAnimatedRed[3],
+                iconVariantAnimatedRed[0]
+                ],
+            duration=125,
+            loop=0)
+        iconVariant.save(
+            outputFilenameAnimatedGreen,
+            optimize = False,
+            save_all=True,
+            append_images=[
+                iconVariant,
+                iconVariant,
+                iconVariant,
+                iconVariantAnimatedGreen[1],
+                iconVariantAnimatedGreen[2],
+                iconVariantAnimatedGreen[3],
+                iconVariantAnimatedGreen[0]
+                ],
+            duration=125,
+            loop=0)
 
 #multithreading
 pool = Pool(pool_size)
