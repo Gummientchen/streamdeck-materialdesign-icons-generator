@@ -57,7 +57,6 @@ def createAnimatedIcon(name, foreground, background, duration = 1000, background
 
     animatedframes = []
 
-
     for f in range(frames):
         frame = Image.blend(background, icon, 1/frames*(f+1))
         frame.thumbnail(final_size, Image.Resampling.LANCZOS)
@@ -134,10 +133,12 @@ def createPNGfromSVG(svgFilename):
     for variant in variants:
         outputFilename = "".join([outputFolder, "/", filename, "-",variant["name"],".png"])
 
+        # if variant already exists skip generation
         if not os.path.isfile(outputFilename):
             iconVariant, animations = createIcon(iconInverted, variant["color"], variant["background"])
             iconVariant.save(outputFilename, optimize = True)
 
+            # generate animated icons
             for animation in animations:
                 outputFolderAnimated = "".join(["output/", filename, "/animated-", animation["name"]])
                 if not os.path.exists(outputFolderAnimated):
@@ -146,14 +147,16 @@ def createPNGfromSVG(svgFilename):
                 
                 images = []
 
+                # add the first animated frames first, for better icon responsivnes
                 for frame in animation["frames"]:
                     images.append(frame)
 
+                # add the static frames last
                 for img in range(len(animation["frames"])-1):
                     images.append(iconVariant)
 
+                # calculate duration per frame
                 duration = math.floor(animation["duration"] / (len(animation["frames"])*2))
-
 
                 iconVariant.save(
                     outputFilenameAnimated,
