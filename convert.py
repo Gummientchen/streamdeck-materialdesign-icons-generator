@@ -13,6 +13,9 @@ from PIL import Image, ImageOps, ImageDraw
 
 start_time = time.time()
 
+## TODO
+# implement option to disable animated icon generation for every variant
+
 ## define your wanted color variations here
 variants = [
     {"name": "aqua", "color": (0, 200, 253), "background": (11, 27, 56)},
