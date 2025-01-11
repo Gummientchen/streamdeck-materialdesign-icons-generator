@@ -36,7 +36,7 @@ if not os.path.exists("tmp"):
 items = glob.glob("input/*.svg")
 
 # created the final icon
-def createIcon(icon, color, backgroundColor = (11, 27, 56)):
+def createIcon(icon, color, backgroundColor = (11, 27, 56), convert=True):
     # Foreground
     foreground  = Image.new( mode = "RGB", size = (96, 96), color = color )
     foreground.putalpha(icon)
@@ -45,7 +45,8 @@ def createIcon(icon, color, backgroundColor = (11, 27, 56)):
     background  = Image.new( mode = "RGBA", size = (width, height), color = backgroundColor )
     background.paste(foreground, (24, 8), foreground)
 
-    background = background.convert("P", palette=Image.ADAPTIVE, colors=64)
+    if(convert == True):
+        background = background.convert("P", palette=Image.ADAPTIVE, colors=64)
 
     return background
 
@@ -77,6 +78,25 @@ def createPNGfromSVG(svgFilename):
         iconVariant = createIcon(iconInverted, variant[1], variant[2])
         outputFilename = "".join([outputFolder, "/", filename, "-",variant[0],".png"])
         iconVariant.save(outputFilename, optimize = True)
+        
+        # Animated Color Variants
+        if(variant[1] == (247, 0, 0)):
+            frame001 = createIcon(iconInverted, variant[1], (11, 27, 56), False)
+            frame002 = createIcon(iconInverted, variant[1], (72,20,106), False)
+            frame003 = createIcon(iconInverted, variant[1], (133,14,156), False)
+            frame004 = createIcon(iconInverted, variant[1], (194,7,205), False)
+            frame005 = createIcon(iconInverted, variant[1], (255,0,255), False)
+        else:
+            frame001 = createIcon(iconInverted, variant[1], (11, 27, 56), False)
+            frame002 = createIcon(iconInverted, variant[1], (72, 20, 42), False)
+            frame003 = createIcon(iconInverted, variant[1], (133, 14, 28), False)
+            frame004 = createIcon(iconInverted, variant[1], (194, 7, 14), False)
+            frame005 = createIcon(iconInverted, variant[1], (255, 0, 0), False)
+        
+        outputFilename = "".join([outputFolder, "/animated_", filename, "-",variant[0],".gif"])
+        
+        frame001.save(outputFilename, save_all=True, append_images=[frame002,frame003,frame004,frame005,frame004,frame003,frame002], duration=(440,20,20,20,440,20,20,20), loop=0, optimize=True)
+        
 
 #multithreading
 pool = Pool(pool_size)
