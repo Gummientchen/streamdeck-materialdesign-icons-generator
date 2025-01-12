@@ -17,11 +17,7 @@ variants = [
     ["pink2", (235, 82, 148), (11, 27, 56)],
     ["yellow", (247, 206, 0), (11, 27, 56)],
     ["red", (247, 0, 0), (11, 27, 56)],
-    ["white", (252, 252, 252), (11, 27, 56)],
-    ["nvidia", (255,255,255), [
-        (123,185,7),
-        (55,141,52)
-    ]]
+    ["white", (252, 252, 252), (11, 27, 56)]
 ]
 
 ## settings
@@ -60,6 +56,8 @@ def createIcon(icon, color, backgroundColor = (11, 27, 56), convert=True):
     else:
         background  = Image.new( mode = "RGBA", size = (width, height), color = backgroundColor )
 
+    background.paste(foreground, (24, 8), foreground)
+    
     if(convert == True):
         background = background.convert("P", palette=Image.ADAPTIVE, colors=64)
 
@@ -96,11 +94,11 @@ def createPNGfromSVG(svgFilename):
         
         # Animated Color Variants
         if(variant[1] == (247, 0, 0)):
-            frame001 = createIcon(iconInverted, variant[1], (11, 27, 56), False)
-            frame002 = createIcon(iconInverted, variant[1], (72,20,106), False)
-            frame003 = createIcon(iconInverted, variant[1], (133,14,156), False)
-            frame004 = createIcon(iconInverted, variant[1], (194,7,205), False)
-            frame005 = createIcon(iconInverted, variant[1], (255,0,255), False)
+            frame001 = createIcon(iconInverted, (247, 0, 0), (11, 27, 56), False)
+            frame002 = createIcon(iconInverted, (247, 62, 62), (72, 20, 42), False)
+            frame003 = createIcon(iconInverted, (247, 124, 124), (133, 14, 28), False)
+            frame004 = createIcon(iconInverted, (247, 185, 185), (194, 7, 14), False)
+            frame005 = createIcon(iconInverted, (247, 247, 247), (255, 0, 0), False)
         else:
             frame001 = createIcon(iconInverted, variant[1], (11, 27, 56), False)
             frame002 = createIcon(iconInverted, variant[1], (72, 20, 42), False)
@@ -110,7 +108,7 @@ def createPNGfromSVG(svgFilename):
         
         outputFilename = "".join([outputFolder, "/animated_", filename, "-",variant[0],".gif"])
         
-        frame001.save(outputFilename, save_all=True, append_images=[frame002,frame003,frame004,frame005,frame004,frame003,frame002], duration=(440,20,20,20,440,20,20,20), loop=0, optimize=True)
+        frame005.save(outputFilename, save_all=True, append_images=[frame004,frame003,frame002,frame001,frame002,frame003,frame004], duration=(440,20,20,20,440,20,20,20), loop=0, optimize=True)
         
 
 #multithreading
