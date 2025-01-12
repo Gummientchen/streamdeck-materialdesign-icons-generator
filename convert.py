@@ -92,6 +92,8 @@ def createPNGfromSVG(svgFilename):
         outputFilename = "".join([outputFolder, "/", filename, "-",variant[0],".png"])
         iconVariant.save(outputFilename, optimize = True)
         
+        # TODO: Make all color variants change from original color to white icon
+        
         # Animated Color Variants
         if(variant[1] == (247, 0, 0)):
             frame001 = createIcon(iconInverted, (247, 0, 0), (11, 27, 56), False)
