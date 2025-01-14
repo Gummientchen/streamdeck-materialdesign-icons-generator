@@ -17,37 +17,36 @@ transitionDuration = 50 # in milliseconds
 transitionFrames = 2 # inbetween frames for transition
 
 ## define your wanted color variations here
-
 # name, (icon color), (background color), [animated versions [icon color, background color, name]]
 
 variants = [
     ["aqua", (0, 200, 253), (11, 27, 56), [
         [False, (217, 53, 38), "shojohired"],
         [False, (0, 180, 120), "greenteal"],
-        [(255,255,255), (29, 89, 208), "bneubrakbay"]
+        [(252, 252, 252), (29, 89, 208), "bneubrakbay"]
     ]],
     ["blue", (59, 123, 255), (11, 27, 56), [
         [False, (217, 53, 38), "shojohired"],
         [False, (0, 180, 120), "greenteal"],
-        [(255,255,255), (29, 89, 208), "bneubrakbay"]
+        [(252, 252, 252), (29, 89, 208), "bneubrakbay"]
     ]],
     ["green", (47, 199, 134), (11, 27, 56), [
         [False, (217, 53, 38), "shojohired"],
-        [(255,255,255), (0, 180, 120), "greenteal"],
+        [(252, 252, 252), (0, 180, 120), "greenteal"],
         [False, (29, 89, 208), "bneubrakbay"]
     ]],
     ["orange", (255, 109, 76), (11, 27, 56), [
-        [(255,255,255), (217, 53, 38), "shojohired"],
-        [(255,255,255), (0, 180, 120), "greenteal"],
+        [(252, 252, 252), (217, 53, 38), "shojohired"],
+        [(252, 252, 252), (0, 180, 120), "greenteal"],
         [False, (29, 89, 208), "bneubrakbay"]
     ]],
     ["pink", (194, 89, 240), (11, 27, 56), [
-        [(255,255,255), (217, 53, 38), "shojohired"],
+        [(252, 252, 252), (217, 53, 38), "shojohired"],
         [False, (0, 180, 120), "greenteal"],
         [False, (29, 89, 208), "bneubrakbay"]
     ]],
     ["pink2", (235, 82, 148), (11, 27, 56), [
-        [(255,255,255), (217, 53, 38), "shojohired"],
+        [(252, 252, 252), (217, 53, 38), "shojohired"],
         [False, (0, 180, 120), "greenteal"],
         [False, (29, 89, 208), "bneubrakbay"]
     ]],
@@ -57,7 +56,7 @@ variants = [
         [False, (29, 89, 208), "bneubrakbay"]
     ]],
     ["red", (247, 0, 0), (11, 27, 56), [
-        [(255,255,255), (217, 53, 38), "shojohired"],
+        [(252, 252, 252), (217, 53, 38), "shojohired"],
         [False, (0, 180, 120), "greenteal"],
         [False, (29, 89, 208), "bneubrakbay"]
     ]],
@@ -65,26 +64,30 @@ variants = [
         [False, (217, 53, 38), "shojohired"],
         [False, (0, 180, 120), "greenteal"],
         [False, (29, 89, 208), "bneubrakbay"]
+    ]],
+    ["nvidia", (252, 252, 252), (118, 185, 0), [
+        [False, (217, 53, 38), "shojohired"],
+        [False, (29, 89, 208), "bneubrakbay"]
+    ]],
+    ["amd", (252, 252, 252), (237, 28, 36), [
+        [False, (0, 180, 120), "greenteal"],
+        [False, (29, 89, 208), "bneubrakbay"]
+    ]],
+    ["intel", (252, 252, 252), (0, 104, 181), [
+        [False, (217, 53, 38), "shojohired"],
+        [False, (0, 180, 120), "greenteal"]
+    ]],
+    ["twitch", (255, 255, 255), (100, 65, 165), [
+        [False, (217, 53, 38), "shojohired"],
+        [False, (0, 180, 120), "greenteal"],
+        [False, (29, 89, 208), "bneubrakbay"]
+    ]],
+    ["almostblack", (252, 252, 252), (40, 40, 40), [
+        [False, (217, 53, 38), "shojohired"],
+        [False, (0, 180, 120), "greenteal"],
+        [False, (29, 89, 208), "bneubrakbay"]
     ]]
 ]
-
-## settings
-pool_size = 16  # your "parallelness"
-width = 144
-height = 144
-transitionDuration = 50 # in milliseconds
-transitionFrames = 2 # inbetween frames for transition
-
-# create directories
-if not os.path.exists("input"):
-    os.makedirs("input")
-if not os.path.exists("output"):
-    os.makedirs("output")
-if not os.path.exists("tmp"):
-    os.makedirs("tmp")
-
-# get all svg files from input
-items = glob.glob("input/*.svg")
 
 def blendColors(color1, color2, step, steps):
     r1 = color1[0]
@@ -186,7 +189,6 @@ def createPNGfromSVG(svgFilename):
 
     # Color variants
     for variant in variants:
-        iconVariant = createIcon(iconInverted, variant[1], variant[2])
         outputFilename = "".join([outputFolder, "/", filename, "-",variant[0],".png"])
         iconVariant = createIcon(iconInverted, variant[1], variant[2])
         checkPath = Path(outputFilename)
@@ -223,13 +225,11 @@ def createPNGfromSVG(svgFilename):
 
             frames = framesInverted + frames
 
-            outputFolderAnimated = "".join([outputFolder, "/animated_",aniVariant[2],"/"])
 
             # create output folder
             if not os.path.exists(outputFolderAnimated):
                 os.makedirs(outputFolderAnimated)
             
-            outputFilename = "".join([outputFolderAnimated, filename, "-",variant[0],"_bg",aniVariant[2],"_animated.gif"])
 
             frameOne = frames[0]
 
