@@ -188,13 +188,22 @@ def createPNGfromSVG(svgFilename):
     for variant in variants:
         iconVariant = createIcon(iconInverted, variant[1], variant[2])
         outputFilename = "".join([outputFolder, "/", filename, "-",variant[0],".png"])
-        iconVariant.save(outputFilename, optimize = True)
-        
-        # TODO: Make all color variants change from original color to white icon
+        iconVariant = createIcon(iconInverted, variant[1], variant[2])
+        checkPath = Path(outputFilename)
+        if not checkPath.is_file():
+            iconVariant.save(outputFilename, optimize = True)
 
         steps = transitionFrames + 1
 
         for idx, aniVariant in enumerate(variant[3]):
+            outputFolderAnimated = "".join([outputFolder, "/animated_",aniVariant[2],"/"])
+            outputFilename = "".join([outputFolderAnimated, filename, "-",variant[0],"_bg",aniVariant[2],"_animated.gif"])
+            
+            checkPath = Path(outputFilename)
+            if checkPath.is_file():
+                continue
+            
+            
             if(aniVariant[0] == False):
                 iconColor = variant[1]
             else:
