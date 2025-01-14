@@ -1,11 +1,20 @@
 import os
 import glob
-from multiprocessing.pool import ThreadPool as Pool
+from pathlib import Path
+from multiprocessing import Pool
+# from multiprocessing.pool import ThreadPool as Pool
 os.environ['path'] += r';C:\Program Files\Inkscape\bin'
 
 from cairosvg import svg2png
 from PIL import Image, ImageOps, ImageDraw
+from tqdm import tqdm
 
+## settings
+pool_size = 16  # your "parallelness"
+width = 144
+height = 144
+transitionDuration = 50 # in milliseconds
+transitionFrames = 2 # inbetween frames for transition
 
 ## define your wanted color variations here
 
@@ -165,7 +174,13 @@ def createPNGfromSVG(svgFilename):
     # Icon
     icon = Image.open(tmpFilename)
     iconBackground  = Image.new( mode = "RGBA", size = (96, 96), color = (255, 255, 255) )
-    iconCombined = Image.alpha_composite(iconBackground, icon)
+    
+    try:
+        iconCombined = Image.alpha_composite(iconBackground, icon)
+    except ValueError as ve:
+        # silently ignore broken images
+        return
+    
     iconRGB = iconCombined.convert("RGB")
     iconInverted = ImageOps.invert(iconRGB).convert("L")
 
@@ -214,11 +229,26 @@ def createPNGfromSVG(svgFilename):
             frameOne.save(outputFilename, save_all=True, append_images=frames[1:], duration=duration, loop=0, optimize=True)
         
 
-#multithreading
-pool = Pool(pool_size)
-for item in items:
-    pool.apply_async(createPNGfromSVG, (item,))
-    # createPNGfromSVG(item)
+if __name__ == "__main__":
+    # create directories
+    print("Creating Output Directories...")
+    if not os.path.exists("input"):
+        os.makedirs("input")
+    if not os.path.exists("output"):
+        os.makedirs("output")
+    if not os.path.exists("tmp"):
+        os.makedirs("tmp")
 
-pool.close()
-pool.join()
+    print("Getting All Icons...")
+    # get all svg files from input
+    items = glob.glob("input/*.svg")
+    
+    print("Generating Icons...")
+    
+    #multithreading
+    numberOfItems = len(items)
+    
+    with Pool(processes=pool_size) as p, tqdm(total=numberOfItems) as pbar:
+        for item in p.imap_unordered(createPNGfromSVG, items):
+            pbar.update()
+            pbar.refresh()
