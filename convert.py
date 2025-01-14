@@ -63,8 +63,8 @@ variants = [
 pool_size = 16  # your "parallelness"
 width = 144
 height = 144
-transitionDuration = 100
-transitionFrames = 3
+transitionDuration = 50 # in milliseconds
+transitionFrames = 2 # inbetween frames for transition
 
 # create directories
 if not os.path.exists("input"):
@@ -177,7 +177,7 @@ def createPNGfromSVG(svgFilename):
         
         # TODO: Make all color variants change from original color to white icon
 
-        steps = transitionFrames
+        steps = transitionFrames + 1
 
         for idx, aniVariant in enumerate(variant[3]):
             if(aniVariant[0] == False):
